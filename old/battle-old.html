@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Saiya Cyber - Ultimate Action Arena</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #0a0a0c;
+            overflow: hidden;
+            touch-action: none;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            color: white;
+        }
+
+        #gameCanvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: #0a0a0c;
+        }
+
+        /* UI Styles */
+        .top-left-zone {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            pointer-events: auto;
+        }
+
+        .btn-magic-menu {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid #00f3ff;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .sub-menu {
+            display: none;
+            gap: 10px;
+            flex-direction: row;
+        }
+
+        .btn-sub {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            background: rgba(0, 0, 0, 0.8);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .btn-steel-punch {
+            position: absolute;
+            bottom: 40px;
+            left: 200px;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid #ccc;
+            background: rgba(80, 80, 80, 0.8);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            pointer-events: auto;
+        }
+
+        .hud-bottom-center {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #333;
+            border-radius: 12px;
+            padding: 10px 20px;
+            text-align: center;
+            pointer-events: none;
+            min-width: 200px;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 12px;
+            background: #222;
+            border-radius: 6px;
+            margin-bottom: 5px;
+            overflow: hidden;
+            border: 1px solid #555;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: #39ff14;
+            box-shadow: 0 0 10px #39ff14;
+            transition: width 0.1s;
+        }
+
+        .controls-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .joystick-zone {
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 2px solid rgba(0, 243, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: auto;
+        }
+
+        .joystick-knob {
+            position: absolute;
+            top: 50px;
+            left: 50px;
+            width: 50px;
+            height: 50px;
+            background: rgba(0, 243, 255, 0.6);
+            box-shadow: 0 0 15px #00f3ff;
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.05s;
+        }
+
+        .action-zone {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            width: 240px;
+            height: 240px;
+            pointer-events: auto;
+        }
+
+        .btn {
+            position: absolute;
+            border-radius: 50%;
+            color: white;
+            font-weight: bold;
+            border: 2px solid #555;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:active {
+            transform: scale(0.9);
+        }
+
+        .btn-sword {
+            bottom: 0;
+            right: 0;
+            width: 85px;
+            height: 85px;
+            font-size: 1.4rem;
+            border-color: #ff2a2a;
+        }
+
+        .btn-punch {
+            bottom: 10px;
+            right: 100px;
+            width: 60px;
+            height: 60px;
+            font-size: 0.9rem;
+            border-color: #ffbf00;
+        }
+
+        .btn-kick {
+            bottom: 85px;
+            right: 85px;
+            width: 60px;
+            height: 60px;
+            font-size: 0.9rem;
+            border-color: #ff8800;
+        }
+
+        .btn-magic {
+            bottom: 120px;
+            right: 15px;
+            width: 65px;
+            height: 65px;
+            font-size: 1rem;
+            border-color: #00f3ff;
+        }
+
+        .btn-dodge {
+            bottom: -10px;
+            right: 175px;
+            width: 65px;
+            height: 65px;
+            font-size: 1rem;
+            border-color: #fff;
+        }
+
+        /* --- Result Overlay Styles --- */
+        #gameResultOverlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-box {
+            background: #050508;
+            padding: 40px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .result-btn {
+            padding: 15px 30px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            background: #00f3ff;
+            color: #000;
+            transition: 0.2s;
+            margin: 10px;
+        }
+
+        .result-btn:active {
+            transform: scale(0.95);
+        }
+
+        .result-btn.back {
+            background: #444;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <div id="gameResultOverlay">
+        <div id="victoryScreen" class="result-box"
+            style="display: none; border: 2px solid #39ff14; box-shadow: 0 0 30px rgba(57,255,20,0.3);">
+            <h1 style="color: #39ff14; font-size: 3rem; text-shadow: 0 0 15px #39ff14;">ชัยชนะ!</h1>
+            <div style="margin: 20px 0; font-size: 1.2rem;">ได้รับเหรียญทอง: <span
+                    style="color: #ffbf00; font-size: 1.5rem;">+500 🟡</span></div>
+            <button class="result-btn" onclick="location.reload()">ด่านต่อไป</button>
+            <button class="result-btn back" onclick="location.href='index.html'">หน้าหลัก</button>
+        </div>
+        <div id="defeatScreen" class="result-box"
+            style="display: none; border: 2px solid #ff2a2a; box-shadow: 0 0 30px rgba(255,42,42,0.3);">
+            <h1 style="color: #ff2a2a; font-size: 3rem; text-shadow: 0 0 15px #ff2a2a;">พ่ายแพ้...</h1>
+            <p style="margin: 20px 0; color: #ccc;">พลังอาคมของคุณยังไม่แกร่งพอ ฝึกฝนเพิ่มสิ!</p>
+            <button class="result-btn" onclick="location.reload()">ลองใหม่</button>
+            <button class="result-btn back" onclick="location.href='index.html'">หน้าหลัก</button>
+        </div>
+    </div>
+
+    <div class="top-left-zone">
+        <button class="btn-magic-menu" onclick="toggleMenu()">✨</button>
+        <div id="subMenu" class="sub-menu">
+            <button class="btn-sub" onclick="triggerBuffalo()">🐃</button>
+            <button class="btn-sub" onclick="triggerHeal()">💊</button>
+        </div>
+    </div>
+
+    <div class="hud-bottom-center">
+        <div style="font-weight: bold; margin-bottom: 5px;">ผู้เล่น</div>
+        <div class="hp-bar">
+            <div id="hpFill" class="hp-fill" style="width: 100%;"></div>
+        </div>
+        <p id="posDisplay">X: 0 | Y: 0</p>
+    </div>
+
+    <div class="controls-layer">
+        <div class="joystick-zone" id="joystickZone">
+            <div class="joystick-knob" id="joystickKnob"></div>
+        </div>
+        <button class="btn-steel-punch" onclick="triggerSteelPunch()">👊</button>
+        <div class="action-zone">
+            <div class="btn btn-sword" onclick="triggerAction('sword')">⚔️</div>
+            <div class="btn btn-punch" onclick="triggerAction('punch')">🤛</div>
+            <div class="btn btn-kick" onclick="triggerAction('kick')">🦵</div>
+            <div class="btn btn-magic" onclick="triggerMagic()">⚡</div>
+            <div class="btn btn-dodge" onclick="triggerRoll()">💨</div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resize); resize();
+
+        let player = { x: window.innerWidth / 2, y: window.innerHeight / 2, radius: 25, speed: 5, actionType: 'idle', actionTimer: 0, angle: 0 };
+        let projectiles = [];
+        let playerHp = 100;
+        let moveVec = { x: 0, y: 0 };
+
+        function showResult(result) {
+            document.getElementById('gameResultOverlay').style.display = 'flex';
+            if (result === 'win') document.getElementById('victoryScreen').style.display = 'block';
+            else document.getElementById('defeatScreen').style.display = 'block';
+        }
+
+        const jZone = document.getElementById('joystickZone');
+        const jKnob = document.getElementById('joystickKnob');
+        let jCenter = { x: 0, y: 0 };
+        let isDragging = false;
+        let lastTapTime = 0;
+
+        function updateJCenter() { const rect = jZone.getBoundingClientRect(); jCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; }
+        window.addEventListener('load', updateJCenter);
+
+        function handleJoystick(e) {
+            if (!isDragging) return;
+            let cX = e.touches ? e.touches[0].clientX : e.clientX;
+            let cY = e.touches ? e.touches[0].clientY : e.clientY;
+            let dx = cX - jCenter.x; let dy = cY - jCenter.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist > 50) { dx = (dx / dist) * 50; dy = (dy / dist) * 50; }
+            jKnob.style.transform = `translate(${dx}px, ${dy}px)`;
+            moveVec.x = dx / 50; moveVec.y = dy / 50;
+            if (dist > 5) { player.angle = Math.atan2(dy, dx); }
+        }
+
+        function checkDoubleTap() {
+            let currentTime = new Date().getTime();
+            let tapLength = currentTime - lastTapTime;
+            if (tapLength < 300 && tapLength > 0) { triggerRoll(); }
+            lastTapTime = currentTime;
+        }
+
+        jZone.addEventListener('touchstart', (e) => { isDragging = true; updateJCenter(); checkDoubleTap(); handleJoystick(e); }, { passive: false });
+        window.addEventListener('touchmove', handleJoystick, { passive: false });
+        window.addEventListener('touchend', () => { isDragging = false; moveVec = { x: 0, y: 0 }; jKnob.style.transform = `translate(0px, 0px)`; });
+
+        function toggleMenu() { const m = document.getElementById('subMenu'); m.style.display = (m.style.display === 'flex') ? 'none' : 'flex'; }
+        function triggerSteelPunch() { player.actionType = 'steel-punch'; player.actionTimer = 20; }
+        function triggerAction(type) { player.actionType = type; player.actionTimer = 15; }
+
+        function triggerMagic() {
+            let dirX = Math.cos(player.angle); let dirY = Math.sin(player.angle);
+            projectiles.push({ x: player.x, y: player.y, dx: dirX * 10, dy: dirY * 10, type: 'magic', life: 60 });
+        }
+
+        function triggerBuffalo() {
+            let dirX = Math.cos(player.angle); let dirY = Math.sin(player.angle);
+            projectiles.push({ x: player.x, y: player.y, dx: dirX * 6, dy: dirY * 6, type: 'buffalo', life: 100 });
+            toggleMenu();
+        }
+
+        function triggerRoll() {
+            player.actionType = 'roll'; player.actionTimer = 20;
+            player.x += Math.cos(player.angle) * 100;
+            player.y += Math.sin(player.angle) * 100;
+        }
+
+        function triggerHeal() { playerHp = 100; document.getElementById('hpFill').style.width = '100%'; toggleMenu(); }
+
+        function update() {
+            let nextX = player.x + (moveVec.x * player.speed);
+            let nextY = player.y + (moveVec.y * player.speed);
+            player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, nextX));
+            player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, nextY));
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#39ff14';
+            ctx.beginPath(); ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); ctx.fill();
+
+            if (player.actionTimer > 0) {
+                player.actionTimer--;
+                ctx.strokeStyle = 'white'; ctx.lineWidth = 5;
+                ctx.strokeRect(player.x - 40, player.y - 40, 80, 80);
+            }
+
+            for (let i = projectiles.length - 1; i >= 0; i--) {
+                let p = projectiles[i];
+                p.x += p.dx; p.y += p.dy; p.life--;
+                ctx.fillStyle = (p.type === 'buffalo') ? 'gold' : 'cyan';
+                ctx.beginPath(); ctx.arc(p.x, p.y, 20, 0, Math.PI * 2); ctx.fill();
+                if (p.life <= 0 || p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) projectiles.splice(i, 1);
+            }
+
+            document.getElementById('posDisplay').innerText = `X: ${Math.round(player.x)} | Y: ${Math.round(player.y)}`;
+            if (playerHp <= 0) { showResult('lose'); return; }
+            requestAnimationFrame(update);
+        }
+        update();
+    </script>
+</body>
+
+</html>

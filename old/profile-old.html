@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, orientation=landscape">
+    <title>SAIYA CYBER - Profile</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: #050508;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+        }
+
+        .profile-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        /* กล่อง Panel พื้นหลัง */
+        .panel {
+            background: rgba(26, 26, 36, 0.8);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .panel-title {
+            color: #00f3ff;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(0, 243, 255, 0.5);
+        }
+
+        /* 1. Panel ซ้าย: ข้อมูลผู้เล่น & ปุ่มกลับ */
+        .left-panel {
+            flex: 1;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #39ff14;
+            background: #111;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+
+        .player-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .player-id {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .gold-display {
+            background: #1a1a24;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            font-size: 1.2rem;
+            color: #ffbf00;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 191, 0, 0.4);
+            width: 100%;
+        }
+
+        /* ปุ่มกลับหน้าหลัก (โดดเด่น) */
+        .btn-back {
+            width: 100%;
+            padding: 15px;
+            margin-top: auto;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            font-size: 1.2rem;
+            background: #ff2a2a;
+            color: white;
+            box-shadow: 0 0 15px #ff2a2a;
+            transition: 0.2s;
+        }
+
+        .btn-back:active {
+            transform: scale(0.95);
+        }
+
+        /* 2. Panel ขวา: สถิติอาคม 7 สาย */
+        .right-panel {
+            flex: 1.8;
+            justify-content: flex-start;
+        }
+
+        .stat-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stat-label {
+            width: 140px;
+            font-weight: bold;
+            color: #ccc;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stat-bar-bg {
+            flex: 1;
+            height: 16px;
+            background: #111;
+            border-radius: 8px;
+            border: 1px solid #444;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            position: absolute;
+            right: 10px;
+            top: -1px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* สีตามปุ่มสกิล */
+        .fill-sword {
+            width: 85%;
+            background: #ff2a2a;
+            box-shadow: 0 0 10px #ff2a2a;
+        }
+
+        .fill-punch {
+            width: 60%;
+            background: #ffbf00;
+            box-shadow: 0 0 10px #ffbf00;
+        }
+
+        .fill-kick {
+            width: 70%;
+            background: #ff8800;
+            box-shadow: 0 0 10px #ff8800;
+        }
+
+        .fill-steel {
+            width: 45%;
+            background: #ccc;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        .fill-magic {
+            width: 90%;
+            background: #00f3ff;
+            box-shadow: 0 0 10px #00f3ff;
+        }
+
+        .fill-buffalo {
+            width: 80%;
+            background: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+        }
+
+        .fill-dodge {
+            width: 95%;
+            background: #fff;
+            box-shadow: 0 0 10px #fff;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="profile-wrapper">
+
+        <!-- ฝั่งซ้าย: ข้อมูลบัญชี และปุ่มกลับ -->
+        <div class="panel left-panel">
+            <h2 class="panel-title" style="width: 100%;">บัญชีผู้เล่น</h2>
+            <div class="avatar-circle">🧑‍🎤</div>
+            <div>
+                <div class="player-name">นักรบไซเบอร์</div>
+                <div class="player-id">UID: SC-9948201</div>
+            </div>
+            <div class="gold-display">🟡 8,500 Gold</div>
+
+            <!-- ปุ่มกลับที่โดดเด่น -->
+            <button class="btn-back" onclick="navigateTo('lobby')">◀ กลับหน้าหลัก</button>
+        </div>
+
+        <!-- ฝั่งขวา: สถิติอาคม 7 สกิล -->
+        <div class="panel right-panel">
+            <h2 class="panel-title">สถิติอาคม (Combat Mastery)</h2>
+
+            <div class="stat-row">
+                <div class="stat-label">⚔️ ฟันดาบ</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-sword"></div><span class="stat-value">LV. 12</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">🤛 ต่อย</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-punch"></div><span class="stat-value">LV. 6</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">🦵 เตะ</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-kick"></div><span class="stat-value">LV. 8</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">👊 หมัดเหล็ก</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-steel"></div><span class="stat-value">LV. 4</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">⚡ ยิงพลัง</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-magic"></div><span class="stat-value">LV. 15</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">🐃 ควายธนู</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-buffalo"></div><span class="stat-value">LV. 10</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">🛡️ เกราะเหล็ก</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-dodge"></div><span class="stat-value">LV. 20 (MAX)</span>
+                </div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-label">💊 ยาต่อชีวิต</div>
+                <div class="stat-bar-bg">
+                    <div class="stat-bar-fill fill-dodge"></div><span class="stat-value">LV. 20 (MAX)</span>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

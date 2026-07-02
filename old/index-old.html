@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, orientation=landscape">
+    <title>SAIYA CYBER - Lobby</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* บังคับจอแนวนอนและขยายให้เต็ม */
+        body {
+            margin: 0;
+            background: #050508;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            font-family: 'Kanit', sans-serif;
+            display: flex;
+        }
+
+        .lobby-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            gap: 20px;
+        }
+
+        /* Panel ซ้าย: เมนู (1/4 ของจอ) */
+        .left-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .menu-btn {
+            background: #1a1a24;
+            border: 1px solid #444;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: #ff2a2a;
+            border-color: #ff2a2a;
+        }
+
+        /* Panel กลาง: ตัวละครหลัก (2/4 ของจอ) */
+        .center-panel {
+            flex: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hero-render {
+            width: 250px;
+            height: 350px;
+            background: #111;
+            border-radius: 20px;
+            animation: float 3s infinite ease-in-out;
+            border: 2px solid #555;
+            position: relative;
+        }
+
+        /* Panel ขวา: เลือกตัวละคร & ปุ่มเริ่ม (1/4 ของจอ) */
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .char-slot {
+            width: 60px;
+            height: 60px;
+            background: #1a1a24;
+            border: 1px solid #444;
+            border-radius: 8px;
+        }
+
+        .btn-battle {
+            background: #ff2a2a;
+            padding: 25px;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 0 20px #ff2a2a;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="lobby-wrapper">
+        <div class="left-panel">
+            <div class="user-info glass" style="margin-bottom: 20px;">
+                <p style="font-size: 0.9rem; color: #aaa; margin: 0;">ด่าน: 1 / 10</p>
+                <h3>นักรบไซเบอร์</h3>
+                <p>🟡 8,500</p>
+            </div>
+            <button class="menu-btn" onclick="location.href='customize.html'">👕 ปรับแต่งชุด</button>
+            <button class="menu-btn" onclick="location.href='shop.html'">🛒 ร้านค้า</button>
+            <button class="menu-btn" onclick="location.href='profile.html'">⚙️ บัญชี</button>
+        </div>
+
+        <div class="center-panel">
+            <div class="hero-render">
+            </div>
+        </div>
+
+        <div class="right-panel">
+            <div class="char-grid" id="charGrid">
+            </div>
+            <button class="btn-battle" onclick="location.href='battle.html'">เริ่มต่อสู้</button>
+        </div>
+    </div>
+
+    <script>
+        const grid = document.getElementById('charGrid');
+        // เปลี่ยนจาก 7 เป็น 9 เพื่อให้เลือกได้ 9 ตัว
+        for (let i = 0; i < 9; i++) {
+            grid.innerHTML += `<div class="char-slot"></div>`;
+        }
+    </script>
+</body>
+
+</html>

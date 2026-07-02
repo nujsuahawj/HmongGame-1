@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SAIYA CYBER - Login</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Kanit', sans-serif; }
+        body { 
+            background: #0a0a0c; 
+            height: 100vh; display: flex; 
+            justify-content: center; align-items: center;
+            overflow: hidden;
+            background-image: radial-gradient(circle at center, #1a1a24 0%, #0a0a0c 100%);
+        }
+
+        .login-container {
+            background: rgba(15, 15, 20, 0.9);
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(0,0,0,0.5), 0 0 10px rgba(255, 42, 42, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .neon-title {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 0 15px #ff2a2a, 0 0 25px #ff2a2a;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle { color: #888; margin-bottom: 30px; font-size: 1rem; }
+
+        .btn-google {
+            background: #fff;
+            color: #000;
+            width: 100%;
+            padding: 15px;
+            border-radius: 8px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-google:active { transform: scale(0.98); }
+        
+        .footer-note { margin-top: 20px; color: #444; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h6 class="neon-title">Hmoob</h6>
+        <p class="subtitle">ระบบลงทะเบียนมหาเวท</p>
+        
+        <button class="btn-google" onclick="window.location.href='index.html'">
+            เข้าสู่ระบบด้วย Google
+        </button>
+
+        <p class="footer-note">เล่นได้เฉพาะบนมือถือผ่าน PWA เท่านั้น</p>
+    </div>
+
+</body>
+</html>
