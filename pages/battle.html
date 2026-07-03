@@ -1,29 +1,35 @@
 <div class="battle-container">
     <canvas id="gameCanvas"></canvas>
 
-    <div id="gameResultOverlay">
+    <!-- หน้าจอแสดงผลแพ้ชนะ -->
+    <div id="gameResultOverlay"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center;">
         <div id="victoryScreen" class="result-box"
-            style="display: none; border: 2px solid #39ff14; box-shadow: 0 0 30px rgba(57,255,20,0.3);">
+            style="display: none; border: 2px solid #39ff14; box-shadow: 0 0 30px rgba(57,255,20,0.3); background: #111; padding: 30px; text-align: center; border-radius: 15px;">
             <h1 style="color: #39ff14; font-size: 3rem; text-shadow: 0 0 15px #39ff14;">ชัยชนะ!</h1>
-            <div style="margin: 20px 0; font-size: 1.2rem;">ได้รับเหรียญทอง: <span
-                    style="color: #ffbf00; font-size: 1.5rem;">+500 🟡</span></div>
-            <button class="result-btn" onclick="navigateTo('battle')">ด่านต่อไป</button>
-            <button class="result-btn back" onclick="navigateTo('lobby')">หน้าหลัก</button>
+            <p style="margin: 20px 0; color: white; font-size: 1.2rem;">"ฝีมือการต่อสู้ของคุณไร้ที่ติ!"</p>
+            <button class="result-btn" id="btnNextStage"
+                style="margin: 10px; padding: 10px 20px; font-size: 1.2rem;">สู้ต่อ</button>
+            <button class="result-btn back" id="btnWinHome"
+                style="margin: 10px; padding: 10px 20px; font-size: 1.2rem;">หน้าหลัก</button>
         </div>
         <div id="defeatScreen" class="result-box"
-            style="display: none; border: 2px solid #ff2a2a; box-shadow: 0 0 30px rgba(255,42,42,0.3);">
+            style="display: none; border: 2px solid #ff2a2a; box-shadow: 0 0 30px rgba(255,42,42,0.3); background: #111; padding: 30px; text-align: center; border-radius: 15px;">
             <h1 style="color: #ff2a2a; font-size: 3rem; text-shadow: 0 0 15px #ff2a2a;">พ่ายแพ้...</h1>
-            <p style="margin: 20px 0; color: #ccc;">พลังอาคมของคุณยังไม่แกร่งพอ ฝึกฝนเพิ่มสิ!</p>
-            <button class="result-btn" onclick="navigateTo('battle')">ลองใหม่</button>
-            <button class="result-btn back" onclick="navigateTo('lobby')">หน้าหลัก</button>
+            <p style="margin: 20px 0; color: #ccc;">พลังอาคมของคุณยังไม่แกร่งพอ!</p>
+            <button class="result-btn" id="btnRetry"
+                style="margin: 10px; padding: 10px 20px; font-size: 1.2rem;">ลองใหม่</button>
+            <button class="result-btn back" id="btnLoseHome"
+                style="margin: 10px; padding: 10px 20px; font-size: 1.2rem;">หน้าหลัก</button>
         </div>
     </div>
 
+    <!-- เมนูเรียกใช้ไอเทม/อาคมพิเศษ -->
     <div class="top-left-zone">
-        <button class="btn-magic-menu" onclick="toggleMenu()">✨</button>
+        <button id="btnMagicMenu" class="btn-magic-menu">✨</button>
         <div id="subMenu" class="sub-menu">
-            <button class="btn-sub" onclick="triggerBuffalo()">🐃</button>
-            <button class="btn-sub" onclick="triggerHeal()">💊</button>
+            <button id="btnBuffalo" class="btn-sub">🐃</button>
+            <button id="btnHeal" class="btn-sub">💊</button>
         </div>
     </div>
 
@@ -39,13 +45,13 @@
         <div class="joystick-zone" id="joystickZone">
             <div class="joystick-knob" id="joystickKnob"></div>
         </div>
-        <button class="btn-steel-punch" onclick="triggerSteelPunch()">👊</button>
+        <button id="btnSteelPunch" class="btn-steel-punch">👊</button>
         <div class="action-zone">
-            <div class="btn btn-sword" onclick="triggerAction('sword')">⚔️</div>
-            <div class="btn btn-punch" onclick="triggerAction('punch')">🤛</div>
-            <div class="btn btn-kick" onclick="triggerAction('kick')">🦵</div>
-            <div class="btn btn-magic" onclick="triggerMagic()">⚡</div>
-            <div class="btn btn-dodge" onclick="triggerRoll()">💨</div>
+            <div id="btnSword" class="btn btn-sword">⚔️</div>
+            <div id="btnPunch" class="btn btn-punch">🤛</div>
+            <div id="btnKick" class="btn btn-kick">🦵</div>
+            <div id="btnMagic" class="btn btn-magic">⚡</div>
+            <div id="btnDodge" class="btn btn-dodge">💨</div>
         </div>
     </div>
 </div>
