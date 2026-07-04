@@ -6,17 +6,11 @@ window.App = {
             cancelAnimationFrame(this.battleLoopId);
             this.battleLoopId = null;
         }
-        // 🌟 คืนค่าหน้าจอให้กลับมาเลื่อน (Scroll) ได้ปกติเมื่อออกจากฉากต่อสู้
-        document.body.style.overflow = '';
-        document.body.style.position = '';
-        document.body.style.width = '';
-        document.body.style.height = '';
+        // 🌟 ลบโค้ด document.body.style.xxx ออกทั้งหมด เพราะ CSS จัดการให้แล้ว
     },
 
     initLobby() {
-        // 🌟 บังคับความสูงล็อบบี้ให้พอดีจอจริง (แก้ขอบล่างแหว่ง)
-        document.body.style.minHeight = window.innerHeight + 'px';
-
+        // 🌟 ลบโค้ด document.body.style.minHeight ออก 
         const char = GameState.getCurrentChar();
         const data = GameState.getData();
 
@@ -61,29 +55,12 @@ window.App = {
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
-        // 🌟 ฟังก์ชันจัดการหน้าจอมือถือโดยเฉพาะ (แก้ปัญหาปุ่มตกขอบ)
+        // 🌟 ให้ Canvas จับขนาดกว้างยาวตามจอก็พอ ไม่ต้องไปแตะต้อง Body
         function resize() {
             let w = window.innerWidth;
             let h = window.innerHeight;
             canvas.width = w;
             canvas.height = h;
-
-            // บังคับคอนเทนเนอร์ต่อสู้ให้มีขนาดเท่าหน้าจอเป๊ะๆ และตรึงไว้ (Fixed)
-            let battleContainer = document.querySelector('.battle-container');
-            if (battleContainer) {
-                battleContainer.style.width = w + 'px';
-                battleContainer.style.height = h + 'px';
-                battleContainer.style.position = 'fixed';
-                battleContainer.style.top = '0';
-                battleContainer.style.left = '0';
-                battleContainer.style.overflow = 'hidden';
-            }
-
-            // ล็อค Body ไม่ให้มือถือไถลจอขึ้นลงได้ระหว่างเล่น
-            document.body.style.overflow = 'hidden';
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
-            document.body.style.height = h + 'px';
         }
         window.addEventListener('resize', resize);
         resize();
@@ -106,7 +83,6 @@ window.App = {
             return imgs;
         };
 
-        // 🌟 คำนวณระดับพื้นอิงจากหน้าจอจริง
         let cameraX = 0;
         let floorTop = canvas.height * 0.75;
         const floorBottom = canvas.height - 120;
