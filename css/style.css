@@ -13,8 +13,17 @@ body {
     background: #050508;
     color: white;
     overflow: hidden;
-    height: 100vh;
     width: 100vw;
+    /* 🌟 ล็อคหน้าจอให้พอดีกับพื้นที่ที่เห็นจริง (ป้องกันการตกลงไปด้านล่าง) */
+    height: 100vh;
+    /* เผื่อเบราว์เซอร์เก่า */
+    height: 100dvh;
+    /* สำหรับมือถือใหม่ๆ */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     touch-action: none;
 }
@@ -25,6 +34,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 /* --- Login --- */
@@ -97,8 +111,8 @@ body {
     display: flex;
     width: 100%;
     height: 100%;
-    /* 🌟 ปรับ Padding ด้านซ้ายและขวา เพื่อไม่ให้ UI ไปติดขอบจอมือถือ */
-    padding: 20px calc(env(safe-area-inset-right, 0px) + 5%) 20px calc(env(safe-area-inset-left, 0px) + 5%);
+    /* 🌟 ปรับ Padding ด้านซ้ายและขวา เป็น 3% ตามที่ต้องการเป๊ะๆ */
+    padding: 20px calc(env(safe-area-inset-right, 0px) + 3%) 20px calc(env(safe-area-inset-left, 0px) + 3%);
     gap: 20px;
     box-sizing: border-box;
 }
@@ -148,8 +162,8 @@ body {
 
 /* --- Lobby --- */
 .lobby-wrapper {
-    /* 🌟 จัดระยะหน้า Lobby ซ้าย-ขวา ให้ตรงกับส่วนอื่นเช่นกัน */
-    padding: 15px calc(env(safe-area-inset-right, 0px) + 5%) 15px calc(env(safe-area-inset-left, 0px) + 5%);
+    /* 🌟 จัดระยะหน้า Lobby ซ้าย-ขวา 3% เช่นกัน */
+    padding: 15px calc(env(safe-area-inset-right, 0px) + 3%) 15px calc(env(safe-area-inset-left, 0px) + 3%);
 }
 
 .lobby-wrapper .left-panel {
@@ -228,14 +242,6 @@ body {
 }
 
 /* --- Lobby Center Character --- */
-.lobby-wrapper .center-panel {
-    flex: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
 .hero-render {
     width: 280px;
     height: 380px;
@@ -719,9 +725,12 @@ body {
 .battle-container {
     width: 100%;
     height: 100%;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     background: #0a0a0c;
     font-family: 'Segoe UI', Tahoma, sans-serif;
+    overflow: hidden;
 }
 
 #gameCanvas {
