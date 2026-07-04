@@ -6,9 +6,17 @@ window.App = {
             cancelAnimationFrame(this.battleLoopId);
             this.battleLoopId = null;
         }
+        // 🌟 คืนค่าหน้าจอให้กลับมาเลื่อน (Scroll) ได้ปกติเมื่อออกจากฉากต่อสู้
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.width = '';
+        document.body.style.height = '';
     },
 
     initLobby() {
+        // 🌟 บังคับความสูงล็อบบี้ให้พอดีจอจริง (แก้ขอบล่างแหว่ง)
+        document.body.style.minHeight = window.innerHeight + 'px';
+
         const char = GameState.getCurrentChar();
         const data = GameState.getData();
 
@@ -53,8 +61,32 @@ window.App = {
         const ctx = canvas.getContext('2d');
         ctx.imageSmoothingEnabled = false;
 
-        function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-        window.addEventListener('resize', resize); resize();
+        // 🌟 ฟังก์ชันจัดการหน้าจอมือถือโดยเฉพาะ (แก้ปัญหาปุ่มตกขอบ)
+        function resize() { 
+            let w = window.innerWidth;
+            let h = window.innerHeight;
+            canvas.width = w; 
+            canvas.height = h; 
+            
+            // บังคับคอนเทนเนอร์ต่อสู้ให้มีขนาดเท่าหน้าจอเป๊ะๆ และตรึงไว้ (Fixed)
+            let battleContainer = document.querySelector('.battle-container');
+            if (battleContainer) {
+                battleContainer.style.width = w + 'px';
+                battleContainer.style.height = h + 'px';
+                battleContainer.style.position = 'fixed';
+                battleContainer.style.top = '0';
+                battleContainer.style.left = '0';
+                battleContainer.style.overflow = 'hidden';
+            }
+            
+            // ล็อค Body ไม่ให้มือถือไถลจอขึ้นลงได้ระหว่างเล่น
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.height = h + 'px';
+        }
+        window.addEventListener('resize', resize); 
+        resize();
 
         const allData = GameState.getData();
         const playerChar = GameState.getCurrentChar();
@@ -74,11 +106,14 @@ window.App = {
             return imgs;
         };
 
-        // 🌟 ตั้งค่าฉาก (Visual) กลับไปใช้ค่าที่คุณต้องการ
-        let cameraX = 0;
-        const floorTop = canvas.height * 0.55;
-        // กึ่งกลางจอยสติ๊กพอดี (จอยสติ๊กสูง 120 ยกจากพื้น 30 = กึ่งกลางคือ 90px จากล่าง)
-        const floorBottom = canvas.height - 90;
+        // 🌟 คำนวณระดับพื้นอิงจากหน้าจอจริง
+        let cameraX = 0; 
+        let floorTop = canvas.height * 0.75; 
+        const floorBottom = canvas.height - 120; 
+        
+        if (floorTop >= floorBottom) {
+            floorTop = floorBottom - 30; 
+        }
 
         class Fighter {
             constructor(x, y, folder, isAI) {
@@ -95,7 +130,7 @@ window.App = {
                 this.frameTimer = 0;
                 this.actionCooldown = 0;
 
-                this.knockdownTimer = 0;
+                this.knockdownTimer = 0; 
                 this.lightHitCount = 0;
                 this.lightHitTimer = 0;
 
@@ -146,7 +181,7 @@ window.App = {
         let ai = new Fighter(canvas.width / 2 + 300, floorTop + 50, folderAI, true);
         let projectiles = [];
         let isGameOver = false;
-        let battleStarted = false;
+        let battleStarted = false; 
 
         const vsOverlay = document.createElement('div');
         vsOverlay.id = 'vsScreenOverlay';
@@ -172,39 +207,39 @@ window.App = {
 
         setTimeout(() => {
             vsOverlay.style.opacity = '0';
-            setTimeout(() => {
-                vsOverlay.remove();
-                battleStarted = true;
-                cameraX = p1.x - (canvas.width / 2);
-                update();
+            setTimeout(() => { 
+                vsOverlay.remove(); 
+                battleStarted = true; 
+                cameraX = p1.x - (canvas.width / 2); 
+                update(); 
             }, 500);
         }, 2500);
 
         const applyHit = (target, type, attackerX, damage) => {
             const isHeavy = (type === 'buffalo' || type === 'steel');
-            const knockDir = target.x < attackerX ? -1 : 1;
-
+            const knockDir = target.x < attackerX ? -1 : 1; 
+            
             target.hp -= damage;
-
+            
             if (isHeavy) {
                 target.action = 'death';
                 target.frameX = 0;
                 target.knockdownTimer = type === 'buffalo' ? 80 : 60;
-                target.x += knockDir * 35;
-                target.lightHitCount = 0;
+                target.x += knockDir * 35; 
+                target.lightHitCount = 0; 
             } else {
                 target.lightHitCount++;
-                target.lightHitTimer = 150;
-
+                target.lightHitTimer = 150; 
+                
                 if (target.lightHitCount >= 3) {
                     target.action = 'death';
                     target.frameX = 0;
-                    target.knockdownTimer = 50;
-                    target.x += knockDir * 15;
+                    target.knockdownTimer = 50; 
+                    target.x += knockDir * 15; 
                     target.lightHitCount = 0;
                 } else {
-                    target.action = 'idle';
-                    target.knockdownTimer = 15;
+                    target.action = 'idle'; 
+                    target.knockdownTimer = 15; 
                 }
             }
         };
@@ -216,7 +251,7 @@ window.App = {
         setTimeout(() => { const rect = jZone.getBoundingClientRect(); jCenter = { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; }, 100);
 
         function handleJoystick(e) {
-            if (!battleStarted || !isDragging || p1.knockdownTimer > 0) return;
+            if (!battleStarted || !isDragging || p1.knockdownTimer > 0) return; 
             e.preventDefault();
             let touch = Array.from(e.touches).find(t => t.target === jZone || t.target === jKnob) || e.touches[0];
             if (!touch) return;
@@ -234,13 +269,13 @@ window.App = {
         }
 
         jZone.addEventListener('touchstart', (e) => {
-            if (!battleStarted || p1.knockdownTimer > 0) return;
+            if (!battleStarted || p1.knockdownTimer > 0) return; 
             isDragging = true;
             let currentTime = Date.now();
             let tapLength = currentTime - lastTapTime;
             if (tapLength > 0 && tapLength < 300 && p1.action !== 'roll') {
                 p1.action = 'roll'; p1.frameX = 0;
-                p1.lightHitCount = 0;
+                p1.lightHitCount = 0; 
             }
             lastTapTime = currentTime;
             handleJoystick(e);
@@ -294,7 +329,7 @@ window.App = {
         bindBtn('btnDodge', () => {
             if (p1.hp > 0 && p1.action !== 'crouch' && p1.knockdownTimer <= 0) {
                 p1.action = 'crouch'; p1.frameX = 0;
-                p1.lightHitCount = 0;
+                p1.lightHitCount = 0; 
             }
         });
 
@@ -304,7 +339,7 @@ window.App = {
             let distToAi = Math.hypot(p1.x - ai.x, p1.y - ai.y);
 
             if (distToAi < 120 && ai.knockdownTimer <= 0) {
-                applyHit(ai, type, p1.x, 10);
+                applyHit(ai, type, p1.x, 10); 
                 ai.hitCount++;
                 if (ai.hitCount >= 2) { ai.mode = 'flee'; ai.modeTimer = 90; ai.hitCount = 0; }
             }
@@ -327,7 +362,7 @@ window.App = {
 
         function drawBackground() {
             ctx.fillStyle = '#050510'; ctx.fillRect(0, 0, canvas.width, floorTop);
-
+            
             ctx.fillStyle = '#0f172a';
             for (let i = -1; i <= Math.ceil(canvas.width / 150) + 1; i++) {
                 let offset = (cameraX * 0.2) % 150; if (offset < 0) offset += 150;
@@ -339,7 +374,7 @@ window.App = {
 
             // โซนพื้นดิน
             ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0, floorTop, canvas.width, floorBottom - floorTop);
-
+            
             ctx.strokeStyle = 'rgba(0, 243, 255, 0.1)'; ctx.lineWidth = 2;
             for (let i = -1; i <= Math.ceil(canvas.width / 100) + 1; i++) {
                 let offset = (cameraX % 100); if (offset < 0) offset += 100;
@@ -348,16 +383,15 @@ window.App = {
             }
 
             ctx.strokeStyle = '#0f3460'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(0, floorTop); ctx.lineTo(canvas.width, floorTop); ctx.stroke();
-
+            
             ctx.fillStyle = '#0a0a14'; ctx.fillRect(0, floorBottom, canvas.width, canvas.height - floorBottom);
         }
 
         function update() {
             if (isGameOver || !battleStarted) return;
 
-            // 🌟 ปรับขอบเขตการเดินของตัวละคร (Walkable Area)
-            let minY = p1.height / 2; // ด้านบนสุด: ขึ้นฟ้าไปได้สุดจอ
-            let maxY = floorBottom;   // ด้านล่างสุด: ตัวละครเดินลงมาได้ลึกถึงเส้นกึ่งกลางจอยสติ๊กพอดีเป๊ะ! (ไม่หักลบความสูงแล้ว)
+            let minY = p1.height / 2; 
+            let maxY = floorBottom; 
 
             [p1, ai].forEach(f => {
                 if (f.lightHitTimer > 0) f.lightHitTimer--;
@@ -387,17 +421,16 @@ window.App = {
                     p1.x += moveVec.x * p1.speed;
                     p1.y += moveVec.y * p1.speed;
                 }
-
-                // จำกัดการวิ่งขึ้นลง ให้ลงได้ลึกสุดตามค่า maxY
+                
                 p1.y = Math.max(minY, Math.min(maxY, p1.y));
                 document.getElementById('hpFill').style.width = p1.hp + '%';
             }
 
             // ระบบกล้องประคองตัวผู้เล่น
             let screenX = p1.x - cameraX;
-            let leftMargin = canvas.width * 0.2;
-            let rightMargin = canvas.width * 0.8;
-
+            let leftMargin = canvas.width * 0.2; 
+            let rightMargin = canvas.width * 0.8; 
+            
             if (screenX > rightMargin) cameraX += (screenX - rightMargin);
             else if (screenX < leftMargin) cameraX -= (leftMargin - screenX);
 
@@ -441,13 +474,12 @@ window.App = {
                             ai.frameX = 0; ai.actionCooldown = 60;
 
                             if (dist < 120 && p1.action !== 'roll' && p1.action !== 'crouch' && p1.knockdownTimer <= 0) {
-                                applyHit(p1, ai.action, ai.x, 8);
+                                applyHit(p1, ai.action, ai.x, 8); 
                             }
                         }
                     }
                 }
-
-                // จำกัด AI ไม่ให้วิ่งทะลุจอแกน Y
+                
                 ai.y = Math.max(minY, Math.min(maxY, ai.y));
             }
 
@@ -459,7 +491,7 @@ window.App = {
                     let aimDist = Math.hypot(aimX, aimY);
                     if (aimDist > 0) { p.x += (aimX / aimDist) * p.speed; p.y += (aimY / aimDist) * p.speed; }
                 } else {
-                    p.x += p.dx; p.y += p.dy || 0;
+                    p.x += p.dx; p.y += p.dy || 0; 
                 }
 
                 p.life--;
@@ -467,10 +499,10 @@ window.App = {
                 if (p.owner === 'player' && Math.hypot(p.x - ai.x, p.y - ai.y) < 50 && ai.hp > 0 && ai.knockdownTimer <= 0) {
                     let dmg = p.type === 'buffalo' ? 25 : (p.type === 'steel' ? 15 : 10);
                     applyHit(ai, p.type, p.x, dmg);
-
+                    
                     ai.hitCount++;
                     if (ai.hitCount >= 2) { ai.mode = 'flee'; ai.modeTimer = 90; ai.hitCount = 0; }
-
+                    
                     projectiles.splice(i, 1);
                     continue;
                 }
@@ -487,7 +519,7 @@ window.App = {
             }
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+            
             drawBackground();
 
             if (p1.y < ai.y) { p1.draw(); ai.draw(); } else { ai.draw(); p1.draw(); }
